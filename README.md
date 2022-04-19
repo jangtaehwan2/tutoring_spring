@@ -1,23 +1,33 @@
-# tutoring_spring
-tutoring project _ spring
+# Open Tutoring
 
-# DaeWon Steel
+# 목차
+* 개요
+* 개발환경
+* 기능
+* API DOCS
+
+# 개요
+
+# 개발환경
 > Spring Initializr
 > * Gradle Project
 > * OpenJDK@11
 > * SpringBoot 2.6.3
->
-> 
-> library
-> * MariaDB
+> Library
+> * JDBC:MariaDB
 > * JPA
 > * Lombok
 > * auth0:jwt
+> Database
+> * MariaDB
+> Infra (예정)
+> * AWS EC2
+> * AWS S3
+> * AWS RDS
 
-DaeWonApplication 을 통하여 실행한다.  
-port : 5877  
-JWT Algorithm : HS256
----
+# 시스템 아키텍쳐
+
+# ER Diagram
 
 # API DOCUMENT
 
@@ -29,10 +39,9 @@ Request
   * Ex) Login Api PATH /auth/login -> localhost:3000/api/auth/login
 * Header
   * Content-type : application/json
-  * Authorization : Login Api Return 값 요구
+  * Authorization : Token value
 * Body
     * json type Request
-    * 요청 실패시 http error
 ---
 ## Auth
 ### 1. 로그인 (Login)

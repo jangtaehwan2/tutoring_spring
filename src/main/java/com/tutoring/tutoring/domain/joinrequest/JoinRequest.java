@@ -1,8 +1,8 @@
 package com.tutoring.tutoring.domain.joinrequest;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.tutoring.tutoring.domain.team.Team;
+import com.tutoring.tutoring.domain.user.User;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -16,9 +16,20 @@ public class JoinRequest {
 
     private String description;
 
+    @NonNull
+    @ManyToOne
     @JoinColumn(name = "team_id")
-    private long teamId;
+    private Team team;
 
+    @NonNull
+    @ManyToOne
     @JoinColumn(name = "user_id")
-    private long userId;
+    private User user;
+
+    @Builder
+    public JoinRequest(String description, @NonNull Team team, @NonNull User user) {
+        this.description = description;
+        this.team = team;
+        this.user = user;
+    }
 }

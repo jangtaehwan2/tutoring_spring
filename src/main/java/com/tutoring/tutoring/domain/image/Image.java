@@ -1,8 +1,7 @@
 package com.tutoring.tutoring.domain.image;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.tutoring.tutoring.domain.post.Post;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -14,12 +13,25 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @NonNull
     private String imageName;
 
+    @NonNull
     private String path;
 
+    @NonNull
     private long size;
 
-    @JoinColumn(name = "post_id")
-    private long postId;
+    @NonNull
+    @ManyToOne
+    @JoinColumn(name = "post_id", foreignKey = @ForeignKey)
+    private Post post;
+
+    @Builder
+    public Image(@NonNull String imageName, @NonNull String path, @NonNull long size, @NonNull Post post) {
+        this.imageName = imageName;
+        this.path = path;
+        this.size = size;
+        this.post = post;
+    }
 }

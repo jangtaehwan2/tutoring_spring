@@ -1,4 +1,4 @@
-package com.tutoring.tutoring.domain.post;
+package com.tutoring.tutoring.domain.subscription;
 
 import com.tutoring.tutoring.domain.team.Team;
 import com.tutoring.tutoring.domain.user.User;
@@ -9,19 +9,13 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class Post {
+public class Subscription {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NonNull
-    private String title;
-
-    @NonNull
-    private String tag;
-
-    @NonNull
-    private String description;
+    @Column(columnDefinition = "tinyint(1) default false") // 알림 설정 default false
+    private boolean notification;
 
     @NonNull
     @ManyToOne
@@ -34,10 +28,8 @@ public class Post {
     private Team team;
 
     @Builder
-    public Post(@NonNull String title, @NonNull String tag, @NonNull String description, @NonNull User user, @NonNull Team team) {
-        this.title = title;
-        this.tag = tag;
-        this.description = description;
+    public Subscription(boolean notification, @NonNull User user, @NonNull Team team) {
+        this.notification = notification;
         this.user = user;
         this.team = team;
     }

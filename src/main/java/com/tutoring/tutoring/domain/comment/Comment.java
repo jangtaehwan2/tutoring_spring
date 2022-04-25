@@ -1,5 +1,7 @@
 package com.tutoring.tutoring.domain.comment;
 
+import com.tutoring.tutoring.domain.post.Post;
+import com.tutoring.tutoring.domain.user.User;
 import lombok.*;
 
 import javax.persistence.*;
@@ -16,13 +18,23 @@ public class Comment {
     private String description;
 
     @NonNull
-    @JoinColumn(name = "post_id")
-    private long postId;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @NonNull
-    @JoinColumn(name = "user_id")
-    private long userId;
+    @ManyToOne
+    @JoinColumn(name = "post_id")
+    private Post post;
 
     @NonNull
     private long time;
+
+    @Builder
+    public Comment(@NonNull String description, @NonNull User user, @NonNull Post post, @NonNull long time) {
+        this.description = description;
+        this.user = user;
+        this.post = post;
+        this.time = time;
+    }
 }

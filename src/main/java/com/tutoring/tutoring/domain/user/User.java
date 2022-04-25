@@ -1,16 +1,16 @@
 package com.tutoring.tutoring.domain.user;
 
+import com.tutoring.tutoring.domain.userprofile.UserProfile;
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @RequiredArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class User {
     @Id
-    @Generated
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @NonNull

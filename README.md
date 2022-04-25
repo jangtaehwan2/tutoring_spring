@@ -20,13 +20,15 @@
 
 # 기능
 * 회원
-  * 회원가입 
-  * 프로필 수정
+  * 회원가입
+  * 회원탈퇴
+  * 프로필 관리
   * 비밀번호 초기화
 * 인증
   * 로그인
 * 팀
   * 팀 CRUD
+  * 팀 프로필 관리
   * 팀 가입 신청
   * 팀 가입 승인
   * 게시글
@@ -63,23 +65,21 @@
 
 # ER Diagram
 
-# Api
 # API
-
 ### 공통
-Request
+**Request**
 * Method : 개별 Api 참고
 * Path
   * /api/{path}
   * Ex) Login Api PATH /auth/login -> localhost:3000/api/auth/login
 * Header
   * Content-type : application/json
-  * Authorization : Token value
+  * Authorization : Token
 * Body
-    * json type Request
+    * json
 ---
-## Auth
-### 1. 로그인 (Login)
+## 1. User
+### 1-1. 로그인
 **Description**   
 
 시스템에 로그인을 요청하기 위한 API 이다.
@@ -88,11 +88,11 @@ Request
 
 *Request*  
 * HttpMethod : POST
-* Path : /auth/login
+* Path : /user/login
 * Body
 ```json
 {
-  "userId" : "user01",
+  "userName" : "user01",
   "userPassword" : "1q2w3e4r!"
 }
 ```
@@ -102,9 +102,58 @@ Request
 * Body
 ```json
 {
-  "key": "AuthorizationValue"
+  "key": "AuthorizationValue",
+  "id": "1",
+  "userName" : "user01",
+  "userNickname" : "Buddy",
+  "userProfile" : {
+    "id" : "1",
+    "fileName" : "",
+    "fileSize" : "",
+    "filePath" : "",
+    "description" : "안녕하세요. 개발자 Buddy 입니다."
+  }
 }
 ```
+
+### 1-2. 회원가입
+**Description**
+
+서비스에 회원가입 하기 위한 API 이다.
+아이디는 특수문자 사용을 불허하며, 1~20글자로 이루어진다.  
+닉네임 또한 1~20글자로 이루어지며, 특수문자의 제한은 없다.
+아래의 userPassword 값은 예시로, 해싱 된 값이 입력되도록 한다.
+
+*Request*
+* HttpMethod : POST
+* Path : /user
+* Body
+```json
+{
+  "userName" : "user01",
+  "userNickname" : "Buddy",
+  "userPassword" : "1q2w3e4r!"
+}
+```
+*Response*
+* Header
+  * Content-Type : application/json
+* Body
+```json
+{
+  "id" : "1",
+  "userName" : "user01",
+  "userNickname" : "Buddy"
+}
+```
+
+### 1-3. 프로필 수정
+### 1-4. 회원탈퇴
+
+
+---
+
+
 #API Template
 **Description**
 

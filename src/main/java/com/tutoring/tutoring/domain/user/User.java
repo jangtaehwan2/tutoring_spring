@@ -5,7 +5,7 @@ import lombok.*;
 
 import javax.persistence.*;
 
-@RequiredArgsConstructor
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class User {
@@ -14,6 +14,7 @@ public class User {
     private long id;
 
     @NonNull
+    @Column(unique = true)
     private String userName;
 
     @NonNull
@@ -21,4 +22,11 @@ public class User {
 
     @NonNull
     private String userNickname;
+
+    @Builder
+    public User(@NonNull String userName, @NonNull String userPassword, @NonNull String userNickname) {
+        this.userName = userName;
+        this.userPassword = userPassword;
+        this.userNickname = userNickname;
+    }
 }

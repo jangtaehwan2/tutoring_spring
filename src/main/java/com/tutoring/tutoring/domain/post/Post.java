@@ -1,10 +1,13 @@
 package com.tutoring.tutoring.domain.post;
 
+import com.tutoring.tutoring.domain.comment.Comment;
 import com.tutoring.tutoring.domain.team.Team;
 import com.tutoring.tutoring.domain.user.User;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -32,6 +35,9 @@ public class Post {
     @ManyToOne
     @JoinColumn(name = "team_id")
     private Team team;
+
+//    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+//    private List<Comment> comments = new ArrayList();
 
     @Builder
     public Post(@NonNull String title, @NonNull String tag, @NonNull String description, @NonNull User user, @NonNull Team team) {

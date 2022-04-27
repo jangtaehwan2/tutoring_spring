@@ -23,7 +23,7 @@ public class UserProfile {
 
     @NonNull
     @OneToOne
-    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "user_team"))
+    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "user_userprofile"))
     private User user;
 
     @Builder
@@ -33,5 +33,9 @@ public class UserProfile {
         this.filePath = filePath;
         this.description = description;
         this.user = user;
+    }
+
+    public void updateDescription(String description) {
+        this.description = description;
     }
 }

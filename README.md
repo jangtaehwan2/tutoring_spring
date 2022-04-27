@@ -82,7 +82,7 @@
 ### 1-1. 로그인
 **Description**   
 
-시스템에 로그인을 요청하기 위한 API 이다.
+시스템에 로그인한다.
 해당 API 의 응답으로 받는 값을 이후 다른 요청의 Header-Authorization 에 넣어 사용한다.
 아래의 userPassword 값은 예시로, 해싱 된 값이 입력되도록 한다.
 
@@ -119,7 +119,7 @@
 ### 1-2. 회원가입
 **Description**
 
-서비스에 회원가입 하기 위한 API 이다.
+서비스에 회원을 등록한다.
 아이디는 특수문자 사용을 불허하며, 1~20글자로 이루어진다.  
 닉네임 또한 1~20글자로 이루어지며, 특수문자의 제한은 없다.
 아래의 userPassword 값은 예시로, 해싱 된 값이 입력되도록 한다.
@@ -147,8 +147,92 @@
 }
 ```
 
-### 1-3. 프로필 수정
+
+### 1-3. 정보수정
+**Description**
+
+회원의 닉네임 및 비밀번호를 재설정 한다.  
+Token 내의 아이디와 요청 시 userId가 동일해야한다.
+
+*Request*
+* HttpMethod : PUT
+* Path : /user/{userId}
+* Body
+```json
+{
+  "userNickname" : "Navi",
+  "userPassword" : "hello,world"
+}
+```
+*Response*
+* Header
+  * Content-Type : application/json
+* Body
+```json
+{
+  "id" : "1",
+  "userName" : "user01",
+  "userNickname" : "Navi"
+}
+```
+
+
+### 1-4. 프로필 수정
+**Description**
+
+회원의 프로필 description을 수정한다.  
+추후 프로필 사진 변경 기능의 추가 예정이다.
+Token 내의 아이디와 요청 시 userId가 동일해야한다.
+
+*Request*
+* HttpMethod : PUT
+* Path : /user/{userId}/profile
+* Body
+```json
+{
+  "description" : "hello, world"
+}
+```
+*Response*
+* Header
+  * Content-Type : application/json
+* Body
+```json
+{
+  "id" : "1",
+  "fileName" : null,
+  "fileSize" : 0,
+  "filePath" : null,
+  "description" : "hello, world"
+}
+```
+
+
 ### 1-4. 회원탈퇴
+**Description**
+
+서비스에 등록된 회원을 삭제한다.  
+Token 내의 아이디와 요청 시 userId가 동일해야한다.
+
+*Request*
+* HttpMethod : DELETE
+* Path : /user/{userId}
+* Body
+```json
+{
+}
+```
+*Response*
+* Header
+  * Content-Type : application/json
+* Body
+```json
+{
+  "message" : "User Delete"
+}
+```
+
+
 
 
 ---

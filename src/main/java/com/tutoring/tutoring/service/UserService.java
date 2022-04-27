@@ -4,10 +4,12 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.tutoring.tutoring.domain.AuthorizationManager;
 import com.tutoring.tutoring.domain.user.User;
-import com.tutoring.tutoring.domain.user.dto.CreateUserRequestDto;
 import com.tutoring.tutoring.domain.user.dto.CreateUserResponseDto;
+import com.tutoring.tutoring.domain.user.dto.DeleteUserResponseDto;
 import com.tutoring.tutoring.domain.user.dto.LoginUserResponseDto;
+import com.tutoring.tutoring.domain.user.dto.UpdateUserResponseDto;
 import com.tutoring.tutoring.domain.userprofile.UserProfile;
 import com.tutoring.tutoring.domain.userprofile.dto.UserProfileResponseDto;
 import com.tutoring.tutoring.repository.UserProfileRepository;
@@ -25,17 +27,6 @@ public class UserService {
     private final UserProfileRepository userProfileRepository;
 
     /**
-     * JWT 시크릿키 지정 및 알고리즘 생성
-     */
-    private Algorithm algorithm = Algorithm.HMAC256("JWTSecretKey");
-    private String issuer = "JTH";
-
-    // JWT 검사
-    private JWTVerifier jwtVerifier = JWT.require(algorithm)
-            .withIssuer(issuer)
-            .build();
-
-    /**
      * 로그인 로직
      * JWT token 반환, 토큰 유효시간 24시간
      * @param userName
@@ -46,9 +37,11 @@ public class UserService {
             User user = userRepository.findByUserNameAndUserPassword(userName, userPassword).get();
             String token = JWT.create()
                     .withExpiresAt(new Date(System.currentTimeMillis() + (1000 * 60 * 60 * 24)))
-                .withIssuer(issuer)
+                .withIssuer(AuthorizationManager.issuer)
+                .withClaim("userId", user.getId())
                 .withClaim("userName", user.getUserName())
-                .sign(algorithm);
+                .withClaim("userNickname", user.getUserNickname())
+                .sign(AuthorizationManager.algorithm);
             UserProfile userProfile = userProfileRepository.findByUserId(user.getId()).get();
             UserProfileResponseDto userProfileResponseDto = UserProfileResponseDto.builder()
                             .userProfile(userProfile)
@@ -85,6 +78,52 @@ public class UserService {
                 .id(user.getId())
                 .userName(user.getUserName())
                 .userNickname(user.getUserNickname())
+                .build();
+    }
+
+    /**
+     * 회원정보 수정 로직(닉네임, 비밀번호)
+     * @param userId
+     * @param userNickname
+     * @param userPassword
+     * @return
+     */
+    public UpdateUserResponseDto updateUser(long userId, String userNickname, String userPassword) {
+        User user = userRepository.findById(userId).get();
+        user.updateUser(userNickname, userPassword);
+        User updatedUser = userRepository.save(user);
+        return UpdateUserResponseDto.builder()
+                .userId(updatedUser.getId())
+                .userName(updatedUser.getUserName())
+                .userNickname(updatedUser.getUserNickname())
+                .build();
+    }
+
+    /**
+     * 회원프로필 수정 로직(description only, 추후 프로필 이미지 추가 예정)
+     * @param userId
+     * @param description
+     * @return
+     */
+    public UserProfileResponseDto updateUserProfile(long userId, String description) {
+        UserProfile userProfile = userProfileRepository.findByUserId(userId).get();
+        userProfile.updateDescription(description);
+        UserProfile updatedUserProfile = userProfileRepository.save(userProfile);
+        return UserProfileResponseDto.builder()
+                .userProfile(updatedUserProfile)
+                .build();
+    }
+
+    /**
+     * 회원삭제 로직
+     * @param userId
+     * @return
+     */
+    public DeleteUserResponseDto deleteUser(long userId) {
+        User user = userRepository.findById(userId).get();
+        userRepository.delete(user);
+        return DeleteUserResponseDto.builder()
+                .message("User Deleted")
                 .build();
     }
 }

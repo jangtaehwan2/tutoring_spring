@@ -29,4 +29,9 @@ public class User {
         this.userPassword = userPassword;
         this.userNickname = userNickname;
     }
+
+    public void updateUser(String userNickname, String userPassword) {
+        this.userNickname = userNickname;
+        this.userPassword = userPassword;
+    }
 }

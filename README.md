@@ -152,11 +152,11 @@
 **Description**
 
 회원의 닉네임 및 비밀번호를 재설정 한다.  
-Token 내의 아이디와 요청 시 userId가 동일해야한다.
+요청 시의 Token 값에 해당하는 유저의 정보를 수정하게 된다.
 
 *Request*
 * HttpMethod : PUT
-* Path : /user/{userId}
+* Path : /user
 * Body
 ```json
 {
@@ -182,11 +182,12 @@ Token 내의 아이디와 요청 시 userId가 동일해야한다.
 
 회원의 프로필 description을 수정한다.  
 추후 프로필 사진 변경 기능의 추가 예정이다.
-Token 내의 아이디와 요청 시 userId가 동일해야한다.
+요청 시의 Token 값에 해당하는 유저의 정보를 수정하게 된다.
+
 
 *Request*
 * HttpMethod : PUT
-* Path : /user/{userId}/profile
+* Path : /user/profile
 * Body
 ```json
 {
@@ -212,11 +213,11 @@ Token 내의 아이디와 요청 시 userId가 동일해야한다.
 **Description**
 
 서비스에 등록된 회원을 삭제한다.  
-Token 내의 아이디와 요청 시 userId가 동일해야한다.
+요청 시의 Token 값에 해당하는 유저의 정보를 삭제하게 된다.
 
 *Request*
 * HttpMethod : DELETE
-* Path : /user/{userId}
+* Path : /user
 * Body
 ```json
 {
@@ -232,6 +233,98 @@ Token 내의 아이디와 요청 시 userId가 동일해야한다.
 }
 ```
 
+## 2. Team
+### 1-1. 팀생성
+**Description**
+
+튜터링을 진행할 팀을 생성한다.  
+공개 팀인 public, 비고액 팀인 private 의 두가지 타입을 가진다.  
+팀을 생성한 유저는 팀의 호스트가 된다.
+
+*Request*
+* HttpMethod : POST
+* Path : /team
+* Body
+```json
+{
+  "name": "hello",
+  "type" : "PUBLIC",
+  "tags" : [
+    "JAVA", "OOP", "SPRING BOOT"
+  ]
+}
+```
+*Response*
+* Header
+  * Content-Type : application/json
+* Body
+```json
+{
+  "teamId" : "1",
+  "name": "hello",
+  "type" : "PUBLIC",
+  "tags" : [
+    "JAVA", "OOP", "SPRING BOOT"
+  ],
+  "hostId" : "1"
+}
+```
+
+
+### 1-2. 팀 목록 읽기
+**Description**
+
+팀 목록을 가져온다.  
+이 때 PRIVATE 속성의 팀의 정보가 공개된 팀만 가져온다.  
+
+*Request*
+* HttpMethod : GET
+* Path : /team
+* Body
+```json
+{
+}
+```
+*Response*
+* Header
+  * Content-Type : application/json
+* Body
+```json
+{
+  "teams": [
+    {
+      "id": 1,
+      "name": "JAVA STUDY",
+      "tags": [
+        "java",
+        "spring",
+        "oop"
+      ],
+      "description": null,
+      "fileName": null,
+      "fileSize": 0,
+      "filePath": null,
+      "type": "PUBLIC",
+      "hostId": 1
+    },
+    {
+      "id": 3,
+      "name": "JAVAzxc",
+      "tags": [
+        "java",
+        "spring",
+        "oop"
+      ],
+      "description": null,
+      "fileName": null,
+      "fileSize": 0,
+      "filePath": null,
+      "type": "PUBLIC",
+      "hostId": 1
+    }
+  ]
+}
+```
 
 
 

@@ -47,4 +47,16 @@ public class Post {
         this.user = user;
         this.team = team;
     }
+
+    @Override
+    public String toString() {
+        return "Post{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", tag='" + tag + '\'' +
+                ", description='" + description + '\'' +
+                ", user=" + user.toString() +
+                ", team=" + team.toString() +
+                '}';
+    }
 }

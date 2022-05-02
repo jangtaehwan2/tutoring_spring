@@ -2,9 +2,11 @@ package com.tutoring.tutoring.domain.team;
 
 import com.tutoring.tutoring.domain.user.User;
 import lombok.*;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.persistence.*;
 
+@ToString
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -13,26 +15,35 @@ public class Team {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NonNull
+    @NonNull @Column(unique = true)
     private String name;
 
     private String tag;
 
     private String description;
 
+    private String fileName;
+
+    private long fileSize;
+
+    private String filePath;
+
+    @Column(columnDefinition = "tinyint(1) default 0")
+    private boolean isClosed;
+
     @NonNull
-    private TeamType type; // public or private
+    @Column(columnDefinition = "varchar(8)")
+    private String type; // public or private
 
     @NonNull
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "host_id")
     private User host;
 
     @Builder
-    public Team(@NonNull String name, String tag, String description, @NonNull TeamType type, @NonNull User host) {
+    public Team(@NonNull String name, String tag, @NonNull String type, @NonNull User host) {
         this.name = name;
         this.tag = tag;
-        this.description = description;
         this.type = type;
         this.host = host;
     }

@@ -1,6 +1,7 @@
 package com.tutoring.tutoring.controller;
 
-import com.tutoring.tutoring.domain.AuthorizationManager;
+import com.tutoring.tutoring.domain.AuthManager;
+import com.tutoring.tutoring.domain.user.User;
 import com.tutoring.tutoring.domain.user.dto.*;
 import com.tutoring.tutoring.domain.userprofile.dto.UpdateUserProfileRequestDto;
 import com.tutoring.tutoring.domain.userprofile.dto.UserProfileResponseDto;
@@ -12,14 +13,13 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-
-@RequiredArgsConstructor
 @RequestMapping("/api/user")
+@RequiredArgsConstructor
 @RestController
 public class UserController {
 
     private final UserService userService;
-    private final AuthorizationManager authorizationManager;
+    private final AuthManager authManager;
 
     /**
      * 로그인
@@ -57,19 +57,31 @@ public class UserController {
     }
 
     /**
-     * 회원수정 (닉네임, 패스워드)
-     * 본인인지 JWT 확인하는 로직 필요
-     * @param updateUserRequestDto
+     * 유저 조회
      * @param userId
      * @return
      */
-    @PutMapping("/{userId}")
-    public ResponseEntity<UpdateUserResponseDto> updateUser(@Valid @RequestBody UpdateUserRequestDto updateUserRequestDto, @PathVariable long userId,
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserDto> readUser(@PathVariable(name = "userId")long userId) {
+        try{
+            UserDto userDto = userService.readUser(userId);
+            return ResponseEntity.status(HttpStatus.OK).body(userDto);
+        } catch(Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    /**
+     * 회원수정 (닉네임, 패스워드)
+     * 본인인지 JWT 확인하는 로직 필요
+     * @param updateUserRequestDto
+     * @return
+     */
+    @PutMapping("")
+    public ResponseEntity<UpdateUserResponseDto> updateUser(@Valid @RequestBody UpdateUserRequestDto updateUserRequestDto,
                                                             @RequestHeader(value = "Authorization")String token) {
         try {
-            if(!authorizationManager.identify(token, userId)) {
-                throw new Exception("Token&Request Not Matched");
-            }
+            long userId = authManager.extractUserId(token);
             String userNickname = updateUserRequestDto.getUserNickname();
             String userPassword = updateUserRequestDto.getUserPassword();
             UpdateUserResponseDto updateUserResponseDto = userService.updateUser(userId, userNickname, userPassword);
@@ -83,17 +95,14 @@ public class UserController {
      * 회원 프로필 수정 (현재는 description only)
      * 추후 프로필 사진 변경 기능 넣을 것
      * @param updateUserProfileRequestDto
-     * @param userId
      * @param token
      * @return
      */
-    @PutMapping("/{userId}/profile")
-    public ResponseEntity<UserProfileResponseDto> updateUserProfile(@RequestBody UpdateUserProfileRequestDto updateUserProfileRequestDto, @PathVariable long userId,
+    @PutMapping("/profile")
+    public ResponseEntity<UserProfileResponseDto> updateUserProfile(@RequestBody UpdateUserProfileRequestDto updateUserProfileRequestDto,
                                                                     @RequestHeader(value = "Authorization")String token) {
         try {
-            if(!authorizationManager.identify(token, userId)) {
-                throw new Exception("Token&Request Not Matched");
-            }
+           long userId = authManager.extractUserId(token);
             String description = updateUserProfileRequestDto.getDescription();
             UserProfileResponseDto userProfileResponseDto = userService.updateUserProfile(userId, description);
             return ResponseEntity.status(HttpStatus.OK).body(userProfileResponseDto);
@@ -104,22 +113,17 @@ public class UserController {
 
     /**
      * 회원 삭제
-     * @param userId
      * @param token
      * @return
      */
-    @DeleteMapping("/{userId}")
-    ResponseEntity<DeleteUserResponseDto> deleteUser(@PathVariable long userId, @RequestHeader(value = "Authorization")String token) {
+    @DeleteMapping("")
+    ResponseEntity<DeleteUserResponseDto> deleteUser(@RequestHeader(value = "Authorization")String token) {
         try{
-            if(!authorizationManager.identify(token, userId)) {
-                throw new Exception("Token&Request Not Matched");
-            }
+            long userId = authManager.extractUserId(token);
             DeleteUserResponseDto deleteUserResponseDto = userService.deleteUser(userId);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(deleteUserResponseDto);
         } catch(Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
-
-
 }

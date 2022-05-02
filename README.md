@@ -147,8 +147,39 @@
 }
 ```
 
+### 1-3. 유저조회
+**Description**
 
-### 1-3. 정보수정
+userId를 통해 유저 1명의 정보를 조회한다.
+
+*Request*
+* HttpMethod : GET
+* Path : /user/{userId}
+* Body
+```json
+{
+}
+```
+*Response*
+* Header
+  * Content-Type : application/json
+* Body
+```json
+{
+  "id": 1,
+  "userNickname": "admin",
+  "userProfile": {
+    "id": 1,
+    "fileName": null,
+    "fileSize": 0,
+    "filePath": null,
+    "description": null
+  }
+}
+```
+
+
+### 1-4. 정보수정
 **Description**
 
 회원의 닉네임 및 비밀번호를 재설정 한다.  
@@ -177,7 +208,7 @@
 ```
 
 
-### 1-4. 프로필 수정
+### 1-5. 프로필 수정
 **Description**
 
 회원의 프로필 description을 수정한다.  
@@ -209,7 +240,7 @@
 ```
 
 
-### 1-4. 회원탈퇴
+### 1-6. 회원탈퇴
 **Description**
 
 서비스에 등록된 회원을 삭제한다.  
@@ -234,7 +265,7 @@
 ```
 
 ## 2. Team
-### 1-1. 팀생성
+### 2-1. 팀생성
 **Description**
 
 튜터링을 진행할 팀을 생성한다.  
@@ -326,6 +357,224 @@
 }
 ```
 
+### 1-2. 팀 읽기
+**Description**
+
+팀 정보를 가져온다.
+
+*Request*
+* HttpMethod : GET
+* Path : /team/{teamId}
+* Body
+```json
+{
+}
+```
+*Response*
+* Header
+  * Content-Type : application/json
+* Body
+```json
+{
+  "id": 1,
+  "name": "private",
+  "tags": [
+    "private"
+  ],
+  "description": null,
+  "fileName": null,
+  "fileSize": 0,
+  "filePath": null,
+  "type": "PRIVATE",
+  "hostId": 1
+}
+```
+
+
+---
+
+## 3. POST
+### 3-1. 글 생성
+**Description**
+
+팀에 소속된 글을 작성한다.  
+해당 글과 소속된 팀, 작성자에 대한 정보가 반환된다.
+
+
+*Request*
+* HttpMethod : POST
+* Path : /team/{teamId}/post
+* Body
+```json
+{
+  "title" : "HELLO",
+  "description" : "HELLO",
+  "tags" : [
+    "test",
+    "test1",
+    "test3"
+  ]
+}
+```
+*Response*
+* Header
+  * Content-Type : application/json
+* Body
+```json
+{
+  "id": 1,
+  "title": "HELLO",
+  "tags": [
+    "test",
+    "test1",
+    "test3"
+  ],
+  "user": {
+    "id": 1,
+    "userNickname": "admin",
+    "userProfile": {
+      "id": 1,
+      "fileName": null,
+      "fileSize": 0,
+      "filePath": null,
+      "description": null
+    }
+  },
+  "team": {
+    "id": 1,
+    "name": "private",
+    "tags": [
+      "private"
+    ],
+    "description": null,
+    "fileName": null,
+    "fileSize": 0,
+    "filePath": null,
+    "type": "PRIVATE",
+    "hostId": 1
+  }
+}
+```
+
+### 3-2. 공개팀 글 읽기
+**Description**
+
+공개팀에 소속된 글의 리스트를 읽는다.  
+리스트 형태로 제공된다.  
+
+*Request*
+* HttpMethod : GET
+* Path : /post
+* Body
+```json
+{
+  "title" : "HELLO",
+  "description" : "HELLO",
+  "tags" : [
+    "test",
+    "test1",
+    "test3"
+  ]
+}
+```
+*Response*
+* Header
+  * Content-Type : application/json
+* Body
+```json
+{
+  "id": 1,
+  "title": "HELLO",
+  "tags": [
+    "test",
+    "test1",
+    "test3"
+  ],
+  "user": {
+    "id": 1,
+    "userNickname": "admin",
+    "userProfile": {
+      "id": 1,
+      "fileName": null,
+      "fileSize": 0,
+      "filePath": null,
+      "description": null
+    }
+  },
+  "team": {
+    "id": 2,
+    "name": "public",
+    "tags": [
+      "public"
+    ],
+    "description": null,
+    "fileName": null,
+    "fileSize": 0,
+    "filePath": null,
+    "type": "PUBLIC",
+    "hostId": 1
+  }
+}
+```
+
+### 3-3. 특정 팀 글 읽기
+**Description**
+
+특정 팀에 소속된 글의 리스트를 읽는다.  
+리스트 형태로 제공된다.
+
+*Request*
+* HttpMethod : GET
+* Path : /post/team/post/{postId}
+* Body
+```json
+{
+}
+```
+*Response*
+* Header
+  * Content-Type : application/json
+* Body
+```json
+[
+  {
+    "post": {
+      "id": 1,
+      "title": "HELLO",
+      "tags": [
+        "test",
+        "test1",
+        "test3"
+      ],
+      "description": "HELLO"
+    },
+    "team": {
+      "id": 1,
+      "name": "private",
+      "tags": [
+        "private"
+      ],
+      "description": null,
+      "fileName": null,
+      "fileSize": 0,
+      "filePath": null,
+      "type": "PRIVATE",
+      "hostId": 1
+    },
+    "user": {
+      "id": 1,
+      "userNickname": "admin",
+      "userProfile": {
+        "id": 1,
+        "fileName": null,
+        "fileSize": 0,
+        "filePath": null,
+        "description": null
+      }
+    }
+  }
+]
+```
 
 
 ---

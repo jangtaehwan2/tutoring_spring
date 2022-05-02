@@ -6,6 +6,9 @@ build/
 !**/src/test/**/build/
 .DS_Store
 
+### db information ###
+**/application-hidden.properties
+
 ### STS ###
 .apt_generated
 .classpath

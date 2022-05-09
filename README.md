@@ -302,7 +302,7 @@ userId를 통해 유저 1명의 정보를 조회한다.
 ```
 
 
-### 1-2. 팀 목록 읽기
+### 2-2. 팀 목록 읽기
 **Description**
 
 팀 목록을 가져온다.  
@@ -357,7 +357,7 @@ userId를 통해 유저 1명의 정보를 조회한다.
 }
 ```
 
-### 1-2. 팀 읽기
+### 2-3. 팀 읽기
 **Description**
 
 팀 정보를 가져온다.
@@ -387,6 +387,45 @@ userId를 통해 유저 1명의 정보를 조회한다.
   "filePath": null,
   "type": "PRIVATE",
   "hostId": 1
+}
+```
+
+### 2-4. 팀 참여하기
+**Description**
+
+팀에 참여하는 요청을 보낸다.  
+public 팀은 요청과 동시에 참여가 수락된다.
+
+*Request*
+* HttpMethod : POST
+* Path : /team/{teamId}/join
+* Body
+```json
+{
+  "description": "hello, world"
+}
+```
+*Response*
+* Header
+  * Content-Type : application/json
+* Body  
+
+**성공시**
+```json
+{
+  "message": "Requested to join",
+  "requestId": 1,
+  "teamId": 1,
+  "userId": 1
+}
+```
+**실패시**
+```json
+{
+"message": "Already subscription or requested to join",
+"requestId": 0,
+"teamId": 0,
+"userId": 0
 }
 ```
 

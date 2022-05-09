@@ -1,13 +1,11 @@
 package com.tutoring.tutoring.controller;
 
 import com.tutoring.tutoring.domain.AuthManager;
-import com.tutoring.tutoring.domain.post.Post;
 import com.tutoring.tutoring.domain.post.dto.CreatePostRequestDto;
 import com.tutoring.tutoring.domain.post.dto.CreatePostResponseDto;
 import com.tutoring.tutoring.domain.post.dto.ReadPostDto;
 import com.tutoring.tutoring.service.PostService;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -54,6 +52,10 @@ public class PostController {
         }
     }
 
+    /**
+     * public 팀에 속한 포스트 목록 읽기
+     * @return
+     */
     @GetMapping("/post")
     public ResponseEntity<List<ReadPostDto>> readPostList() {
         try {
@@ -64,6 +66,11 @@ public class PostController {
         }
     }
 
+    /**
+     * 특정 팀에 속한 포스트 목록 읽기
+     * @param teamId
+     * @return
+     */
     @GetMapping("/team/{teamId}/post")
     public ResponseEntity<List<ReadPostDto>> readTeamPostList(@PathVariable(name = "teamId")long teamId) {
         try {

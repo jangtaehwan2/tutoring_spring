@@ -1,10 +1,16 @@
 package com.tutoring.tutoring.service;
 
+import com.tutoring.tutoring.domain.joinrequest.JoinRequest;
+import com.tutoring.tutoring.domain.joinrequest.dto.CreateJoinRequestResponseDto;
+import com.tutoring.tutoring.domain.joinrequest.dto.JoinRequestDto;
+import com.tutoring.tutoring.domain.subscription.Subscription;
 import com.tutoring.tutoring.domain.team.Team;
 import com.tutoring.tutoring.domain.team.dto.CreateTeamResponseDto;
 import com.tutoring.tutoring.domain.team.dto.TeamDto;
 import com.tutoring.tutoring.domain.team.dto.ReadTeamListDto;
 import com.tutoring.tutoring.domain.user.User;
+import com.tutoring.tutoring.repository.JoinRequestRepository;
+import com.tutoring.tutoring.repository.SubscriptionRepository;
 import com.tutoring.tutoring.repository.TeamRepository;
 import com.tutoring.tutoring.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -20,6 +27,8 @@ public class TeamService {
 
     private final TeamRepository teamRepository;
     private final UserRepository userRepository;
+    private final JoinRequestRepository joinRequestRepository;
+    private final SubscriptionRepository subscriptionRepository;
 
     private String tagListToString(List<String> tags) {
         String tag = "";
@@ -80,5 +89,53 @@ public class TeamService {
                 .team(team)
                 .build();
         return teamDto;
+    }
+
+    /**
+     * 팀 참여 로직
+     * public 팀이면 요청과 동시에 수락하기
+     * @param teamId
+     * @param userId
+     * @param description
+     * @return
+     */
+    public CreateJoinRequestResponseDto createJoinRequest(long teamId, long userId, String description) {
+        /**
+         * 이미 요청 또는 구독 중이면 수행하지 않고 message fail 반환
+         * 이외에는 성공적으로 요청하고 메세지 반환
+         */
+        Optional<JoinRequest> joinRequest = joinRequestRepository.findByTeamIdAndUserId(teamId, userId);
+        Optional<Subscription> subscription = subscriptionRepository.findByTeamIdAndUserId(teamId, userId);
+
+        if(joinRequest.isEmpty() && subscription.isEmpty()) {
+            JoinRequest newJoin = JoinRequest.builder()
+                    .team(teamRepository.findById(teamId).get())
+                    .description(description)
+                    .user(userRepository.findById(userId).get())
+                    .build();
+            JoinRequest savedJoinRequest = joinRequestRepository.save(newJoin);
+
+            return CreateJoinRequestResponseDto.builder()
+                    .message("Requested to join")
+                    .requestId(savedJoinRequest.getId())
+                    .teamId(savedJoinRequest.getTeam().getId())
+                    .userId(savedJoinRequest.getUser().getId())
+                    .build();
+        } else {
+            return CreateJoinRequestResponseDto.builder()
+                    .message("Already subscription or requested to join")
+                    .build();
+        }
+    }
+
+    public List<JoinRequestDto> readJoinRequest(long teamId) {
+        List<JoinRequest> joinRequestList = joinRequestRepository.findByTeamId(teamId);
+        List<JoinRequestDto> joinRequestDtoList = new ArrayList<>();
+        for (JoinRequest joinRequest : joinRequestList) {
+            joinRequestDtoList.add(JoinRequestDto.builder()
+                    .joinRequest(joinRequest)
+                    .build());
+        }
+        return joinRequestDtoList;
     }
 }

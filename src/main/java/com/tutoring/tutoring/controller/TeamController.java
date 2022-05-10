@@ -104,7 +104,7 @@ public class TeamController {
     public ResponseEntity<List<JoinRequestDto>> readJoinRequest(@PathVariable(name = "teamId")long teamId, @RequestHeader(name = "Authorization")String token){
         try {
             long userId = authManager.extractUserId(token); // 토큰 호스트 검사 로직
-            List<JoinRequestDto> responseDto = teamService.readJoinRequest(teamId);
+            List<JoinRequestDto> responseDto = teamService.readJoinRequest(teamId, userId);
             return ResponseEntity.status(HttpStatus.OK).body(responseDto);
         } catch(Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();

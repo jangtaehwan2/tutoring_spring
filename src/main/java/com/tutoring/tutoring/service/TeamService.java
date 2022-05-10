@@ -108,6 +108,20 @@ public class TeamService {
         Optional<Subscription> subscription = subscriptionRepository.findByTeamIdAndUserId(teamId, userId);
 
         if(joinRequest.isEmpty() && subscription.isEmpty()) {
+            if(isPublicTeam(teamId)) {
+                // PUBLIC team 이면 바로 가입 로직을 실행
+                Subscription newSubscription = Subscription.builder()
+                        .team(teamRepository.findById(teamId).get())
+                        .user(userRepository.findById(userId).get())
+                        .build();
+                Subscription savedSubscription = subscriptionRepository.save(newSubscription);
+                return CreateJoinRequestResponseDto.builder()
+                        .message("Subscribed")
+                        .requestId(0)
+                        .teamId(savedSubscription.getTeam().getId())
+                        .userId(savedSubscription.getUser().getId())
+                        .build();
+            }
             JoinRequest newJoin = JoinRequest.builder()
                     .team(teamRepository.findById(teamId).get())
                     .description(description)
@@ -128,14 +142,42 @@ public class TeamService {
         }
     }
 
-    public List<JoinRequestDto> readJoinRequest(long teamId) {
-        List<JoinRequest> joinRequestList = joinRequestRepository.findByTeamId(teamId);
-        List<JoinRequestDto> joinRequestDtoList = new ArrayList<>();
-        for (JoinRequest joinRequest : joinRequestList) {
-            joinRequestDtoList.add(JoinRequestDto.builder()
-                    .joinRequest(joinRequest)
-                    .build());
+    /**
+     * 팀 참여 요청 리스트 로직
+     * @param teamId
+     * @return
+     */
+    public List<JoinRequestDto> readJoinRequest(long teamId, long userId) {
+        if(!isHost(teamId, userId)) {
+            return null;
+        } else {
+            List<JoinRequest> joinRequestList = joinRequestRepository.findByTeamId(teamId);
+            List<JoinRequestDto> joinRequestDtoList = new ArrayList<>();
+            for (JoinRequest joinRequest : joinRequestList) {
+                joinRequestDtoList.add(JoinRequestDto.builder()
+                        .joinRequest(joinRequest)
+                        .build());
+            }
+            return joinRequestDtoList;
         }
-        return joinRequestDtoList;
+    }
+
+    private boolean isHost(long teamId, long userId) {
+        Team team = teamRepository.findById(teamId).get();
+        if(userId == team.getHost().getId()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    // team type PUBLIC -> true
+    private boolean isPublicTeam(long teamId) {
+        Team team = teamRepository.findById(teamId).get();
+        if(team.getType().equals("PUBLIC")) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

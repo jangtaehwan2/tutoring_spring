@@ -65,6 +65,13 @@ public class TeamService {
                 .build();
         Team savedTeam = teamRepository.save(team);
 
+        // 팀 생성 시 호스트 자동 가입
+        Subscription subscription = Subscription.builder()
+                .user(userRepository.findById(userId).get())
+                .team(savedTeam)
+                .build();
+        subscriptionRepository.save(subscription);
+
         List<String> savedTags = tagStringToList(savedTeam.getTag());
 
         CreateTeamResponseDto createTeamResponseDto= CreateTeamResponseDto.builder()

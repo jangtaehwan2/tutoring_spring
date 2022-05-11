@@ -1,6 +1,7 @@
 package com.tutoring.tutoring.controller;
 
 import com.tutoring.tutoring.domain.AuthManager;
+import com.tutoring.tutoring.domain.team.dto.TeamDto;
 import com.tutoring.tutoring.domain.user.User;
 import com.tutoring.tutoring.domain.user.dto.*;
 import com.tutoring.tutoring.domain.userprofile.dto.UpdateUserProfileRequestDto;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
@@ -66,6 +68,15 @@ public class UserController {
         try{
             UserDto userDto = userService.readUser(userId);
             return ResponseEntity.status(HttpStatus.OK).body(userDto);
+        } catch(Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+    @GetMapping("/{userId}/subscription")
+    public ResponseEntity<List<TeamDto>> readSubscription(@PathVariable(name = "userId")long userId) {
+        try {
+            List<TeamDto> teamList = userService.readSubscriptionList(userId);
+            return ResponseEntity.status(HttpStatus.OK).body(teamList);
         } catch(Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }

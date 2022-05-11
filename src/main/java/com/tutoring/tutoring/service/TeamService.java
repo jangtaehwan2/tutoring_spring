@@ -1,8 +1,11 @@
 package com.tutoring.tutoring.service;
 
+import com.tutoring.tutoring.domain.AuthManager;
 import com.tutoring.tutoring.domain.joinrequest.JoinRequest;
+import com.tutoring.tutoring.domain.joinrequest.dto.AcceptJoinRequestResponseDto;
 import com.tutoring.tutoring.domain.joinrequest.dto.CreateJoinRequestResponseDto;
 import com.tutoring.tutoring.domain.joinrequest.dto.JoinRequestDto;
+import com.tutoring.tutoring.domain.joinrequest.dto.RejectJoinRequestResponseDto;
 import com.tutoring.tutoring.domain.subscription.Subscription;
 import com.tutoring.tutoring.domain.team.Team;
 import com.tutoring.tutoring.domain.team.dto.CreateTeamResponseDto;
@@ -29,6 +32,7 @@ public class TeamService {
     private final UserRepository userRepository;
     private final JoinRequestRepository joinRequestRepository;
     private final SubscriptionRepository subscriptionRepository;
+    private final AuthManager authManager;
 
     private String tagListToString(List<String> tags) {
         String tag = "";
@@ -108,7 +112,7 @@ public class TeamService {
         Optional<Subscription> subscription = subscriptionRepository.findByTeamIdAndUserId(teamId, userId);
 
         if(joinRequest.isEmpty() && subscription.isEmpty()) {
-            if(isPublicTeam(teamId)) {
+            if(authManager.isPublicTeam(teamId)) {
                 // PUBLIC team 이면 바로 가입 로직을 실행
                 Subscription newSubscription = Subscription.builder()
                         .team(teamRepository.findById(teamId).get())
@@ -138,17 +142,20 @@ public class TeamService {
         } else {
             return CreateJoinRequestResponseDto.builder()
                     .message("Already subscription or requested to join")
+                    .requestId(-1)
+                    .teamId(teamId)
+                    .userId(userId)
                     .build();
         }
     }
 
     /**
-     * 팀 참여 요청 리스트 로직
+     * 팀 참여 요청 리스트 로직 * 호스트만 사용 가능 *
      * @param teamId
      * @return
      */
     public List<JoinRequestDto> readJoinRequest(long teamId, long userId) {
-        if(!isHost(teamId, userId)) {
+        if(!authManager.isHost(teamId, userId)) {
             return null;
         } else {
             List<JoinRequest> joinRequestList = joinRequestRepository.findByTeamId(teamId);
@@ -162,22 +169,26 @@ public class TeamService {
         }
     }
 
-    private boolean isHost(long teamId, long userId) {
-        Team team = teamRepository.findById(teamId).get();
-        if(userId == team.getHost().getId()) {
-            return true;
-        } else {
-            return false;
-        }
+    public AcceptJoinRequestResponseDto acceptJoinRequest(long joinId) {
+        JoinRequest joinRequest = joinRequestRepository.findById(joinId).get();
+        Team team = joinRequest.getTeam();
+        User user = joinRequest.getUser();
+        Subscription subscription = Subscription.builder()
+                .user(user)
+                .team(team)
+                .build();
+        Subscription savedSubscription = subscriptionRepository.save(subscription);
+        joinRequestRepository.delete(joinRequest);
+        return AcceptJoinRequestResponseDto.builder()
+                .subscription(savedSubscription)
+                .build();
     }
 
-    // team type PUBLIC -> true
-    private boolean isPublicTeam(long teamId) {
-        Team team = teamRepository.findById(teamId).get();
-        if(team.getType().equals("PUBLIC")) {
-            return true;
-        } else {
-            return false;
-        }
+    public RejectJoinRequestResponseDto rejectJoinRequest(long joinId) {
+        JoinRequest joinRequest = joinRequestRepository.findById(joinId).get();
+        joinRequestRepository.delete(joinRequest);
+        return RejectJoinRequestResponseDto.builder()
+                .message("JoinRequest Rejected")
+                .build();
     }
 }

@@ -1,9 +1,7 @@
 package com.tutoring.tutoring.controller;
 
 import com.tutoring.tutoring.domain.AuthManager;
-import com.tutoring.tutoring.domain.joinrequest.dto.CreateJoinRequestRequestDto;
-import com.tutoring.tutoring.domain.joinrequest.dto.CreateJoinRequestResponseDto;
-import com.tutoring.tutoring.domain.joinrequest.dto.JoinRequestDto;
+import com.tutoring.tutoring.domain.joinrequest.dto.*;
 import com.tutoring.tutoring.domain.team.TeamType;
 import com.tutoring.tutoring.domain.team.dto.CreateTeamRequestDto;
 import com.tutoring.tutoring.domain.team.dto.CreateTeamResponseDto;
@@ -86,7 +84,14 @@ public class TeamController {
         }
     }
 
-    // 아마도 메세지 리턴으로 갈 듯
+    /**
+     * 팀에 join 요청 보내기
+     * @param teamId
+     * @param token
+     * @param createJoinRequestRequestDto
+     * @return
+     */
+    // message + joinRequest
     @PostMapping("/{teamId}/join")
     public ResponseEntity<CreateJoinRequestResponseDto> createJoinRequest(@PathVariable(name = "teamId")long teamId, @RequestHeader(name = "Authorization")String token, @RequestBody CreateJoinRequestRequestDto createJoinRequestRequestDto){
         try {
@@ -99,7 +104,14 @@ public class TeamController {
         }
     }
 
+    /**
+     * 팀의 참여 요청 리스트 확인하기 * 호스트만 사용 가능 *
+     * @param teamId
+     * @param token
+     * @return
+     */
     // 팀의 호스트만 사용 할 수 있어야 함
+    // 팀 조인 리스트 확인하기
     @GetMapping("/{teamId}/join")
     public ResponseEntity<List<JoinRequestDto>> readJoinRequest(@PathVariable(name = "teamId")long teamId, @RequestHeader(name = "Authorization")String token){
         try {
@@ -110,4 +122,54 @@ public class TeamController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
+
+    /**
+     * 팀의 참여 요청 수락하기 * 호스트만 사용 가능*
+     * @param teamId
+     * @param joinId
+     * @param token
+     * @return
+     */
+    @PostMapping("/{teamId}/join/{joinId}")
+    public ResponseEntity<AcceptJoinRequestResponseDto> acceptJoinRequest(@PathVariable(name = "teamId")long teamId,
+                                                                          @PathVariable(name = "joinId")long joinId,
+                                                                          @RequestHeader(name = "Authorization")String token) {
+        try {
+            long hostId = authManager.extractUserId(token);
+            if(authManager.isHost(teamId, hostId)) {
+                AcceptJoinRequestResponseDto responseDto = teamService.acceptJoinRequest(joinId);
+                return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+            } else {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+        } catch(Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    /**
+     * 팀의 참여 요청 거절하기 * 호스트만 사용 가능 *
+     * @param teamId
+     * @param joinId
+     * @param token
+     * @return
+     */
+    @DeleteMapping("/{teamId}/join/{joinId}")
+    public ResponseEntity<RejectJoinRequestResponseDto> rejectJoinRequest(@PathVariable(name = "teamId")long teamId,
+                                                                          @PathVariable(name = "joinId")long joinId,
+                                                                          @RequestHeader(name = "Authorization")String token) {
+        try {
+            long hostId = authManager.extractUserId(token);
+            if(authManager.isHost(teamId, hostId)) {
+                RejectJoinRequestResponseDto responseDto = teamService.rejectJoinRequest(joinId);
+                return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+            } else {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+        } catch(Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+
 }

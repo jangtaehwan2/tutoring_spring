@@ -179,7 +179,59 @@ userId를 통해 유저 1명의 정보를 조회한다.
 ```
 
 
-### 1-4. 정보수정
+### 1-4. 유저 팀 목록 조회
+**Description**
+
+userId를 통해 유저 1명의 참여중인 팀 목록을 조회한다.
+
+*Request*
+* HttpMethod : GET
+* Path : /user/{userId}/subscription
+* Body
+```json
+{
+}
+```
+*Response*
+* Header
+  * Content-Type : application/json
+* Body
+```json
+[
+  {
+    "id": 1,
+    "name": "private",
+    "tags": [
+      "private"
+    ],
+    "description": null,
+    "fileName": null,
+    "fileSize": 0,
+    "filePath": null,
+    "type": "PRIVATE",
+    "hostId": 1,
+    "closed": false
+  },
+  {
+    "id": 2,
+    "name": "public",
+    "tags": [
+      "publicTeam"
+    ],
+    "description": null,
+    "fileName": null,
+    "fileSize": 0,
+    "filePath": null,
+    "type": "PUBLIC",
+    "hostId": 1,
+    "closed": false
+  }
+]
+```
+
+
+
+### 1-5. 정보수정
 **Description**
 
 회원의 닉네임 및 비밀번호를 재설정 한다.  
@@ -208,7 +260,7 @@ userId를 통해 유저 1명의 정보를 조회한다.
 ```
 
 
-### 1-5. 프로필 수정
+### 1-6. 프로필 수정
 **Description**
 
 회원의 프로필 description을 수정한다.  
@@ -240,7 +292,7 @@ userId를 통해 유저 1명의 정보를 조회한다.
 ```
 
 
-### 1-6. 회원탈퇴
+### 1-7. 회원탈퇴
 **Description**
 
 서비스에 등록된 회원을 삭제한다.  
@@ -394,7 +446,8 @@ userId를 통해 유저 1명의 정보를 조회한다.
 **Description**
 
 팀에 참여하는 요청을 보낸다.  
-public 팀은 요청과 동시에 참여가 수락된다.
+요청 성공시 requestId를 반환하고, 실패 시 -1을 반환하며,
+public 팀은 요청과 동시에 참여되어 0을 반환한다.
 
 *Request*
 * HttpMethod : POST
@@ -423,12 +476,98 @@ public 팀은 요청과 동시에 참여가 수락된다.
 ```json
 {
 "message": "Already subscription or requested to join",
-"requestId": 0,
-"teamId": 0,
-"userId": 0
+"requestId": -1,
+"teamId": 1,
+"userId": 1
 }
 ```
 
+### 2-5. 팀 참여 요청 보기
+**Description**
+
+팀에 참여하는 요청을 확인한다.  
+팀의 호스트만 사용 할 수 있다.
+
+*Request*
+* HttpMethod : GET
+* Path : /team/{teamId}/join
+* Body
+```json
+{
+}
+```
+*Response*
+* Header
+  * Content-Type : application/json
+* Body
+
+**성공시**
+```json
+{
+  "message": "Requested to join",
+  "requestId": 1,
+  "teamId": 1,
+  "userId": 1
+}
+```
+
+### 2-6. 팀 요청 수락하기
+**Description**
+
+팀에 참여하는 요청을 수락한다.  
+팀의 호스트만 사용 할 수 있다.
+
+*Request*
+* HttpMethod : POST
+* Path : /team/{teamId}/join/{joinId}
+* Body
+```json
+{
+}
+```
+*Response*
+* Header
+  * Content-Type : application/json
+* Body
+
+**성공시**
+```json
+{
+  "teamId" : "1",
+  "name": "hello",
+  "type" : "PUBLIC",
+  "tags" : [
+    "JAVA", "OOP", "SPRING BOOT"
+  ],
+  "hostId" : "1"
+}
+```
+
+### 2-7. 팀 참여 요청 거절하기
+**Description**
+
+팀에 참여하는 요청을 거절한다.  
+팀의 호스트만 사용 할 수 있다.
+
+*Request*
+* HttpMethod : DELETE
+* Path : /team/{teamId}/join/{joinId}
+* Body
+```json
+{
+}
+```
+*Response*
+* Header
+  * Content-Type : application/json
+* Body
+
+**성공시**
+```json
+{
+  "message": "JoinRequest Rejected"
+}
+```
 
 ---
 

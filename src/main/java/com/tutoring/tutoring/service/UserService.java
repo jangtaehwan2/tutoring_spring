@@ -2,17 +2,22 @@ package com.tutoring.tutoring.service;
 
 import com.auth0.jwt.JWT;
 import com.tutoring.tutoring.domain.AuthManager;
+import com.tutoring.tutoring.domain.subscription.Subscription;
+import com.tutoring.tutoring.domain.team.dto.TeamDto;
 import com.tutoring.tutoring.domain.user.User;
 import com.tutoring.tutoring.domain.user.dto.*;
 import com.tutoring.tutoring.domain.userprofile.UserProfile;
 import com.tutoring.tutoring.domain.userprofile.dto.UserProfileDto;
 import com.tutoring.tutoring.domain.userprofile.dto.UserProfileResponseDto;
+import com.tutoring.tutoring.repository.SubscriptionRepository;
 import com.tutoring.tutoring.repository.UserProfileRepository;
 import com.tutoring.tutoring.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -20,6 +25,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserProfileRepository userProfileRepository;
+    private final SubscriptionRepository subscriptionRepository;
 
     /**
      * 로그인 로직
@@ -76,6 +82,11 @@ public class UserService {
                 .build();
     }
 
+    /**
+     * 회원 조회 로직
+     * @param userId
+     * @return
+     */
     public UserDto readUser(long userId) {
         User user = userRepository.findById(userId).get();
         UserProfile userProfile = userProfileRepository.findByUserId(userId).get();
@@ -85,6 +96,19 @@ public class UserService {
                         .userProfile(userProfile)
                         .build())
                 .build();
+    }
+
+    public List<TeamDto> readSubscriptionList(long userId) {
+        List<Subscription> subscriptionList = subscriptionRepository.findAllByUserId(userId);
+        List<TeamDto> teamList = new ArrayList<>();
+        for (Subscription subscription : subscriptionList) {
+            TeamDto teamDto = TeamDto.builder()
+                                    .team(subscription.getTeam())
+                                    .build();
+            teamList.add(teamDto);
+        }
+        return teamList;
+
     }
 
     /**

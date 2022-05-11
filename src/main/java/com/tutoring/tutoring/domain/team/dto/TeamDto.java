@@ -30,6 +30,8 @@ public class TeamDto {
 
     private long hostId;
 
+    private boolean isClosed;
+
     @Builder
     public TeamDto(Team team) {
         this.id = team.getId();
@@ -41,5 +43,6 @@ public class TeamDto {
         this.filePath = team.getFilePath();
         this.type = team.getType();
         this.hostId = team.getHost().getId();
+        this.isClosed = team.isClosed();
     }
 }

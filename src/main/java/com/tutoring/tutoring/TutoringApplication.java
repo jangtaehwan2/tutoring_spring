@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class TutoringApplication {
 
 	public static void main(String[] args) {
+		System.out.println("Ver.20220511");
 		SpringApplication.run(TutoringApplication.class, args);
 	}
 }

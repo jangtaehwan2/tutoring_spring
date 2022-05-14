@@ -1,6 +1,7 @@
 package com.tutoring.tutoring.controller;
 
-import com.tutoring.tutoring.domain.AuthManager;
+import com.tutoring.tutoring.AuthManager;
+import com.tutoring.tutoring.domain.comment.dto.CommentDto;
 import com.tutoring.tutoring.domain.post.dto.CreatePostRequestDto;
 import com.tutoring.tutoring.domain.post.dto.CreatePostResponseDto;
 import com.tutoring.tutoring.domain.post.dto.ReadPostDto;
@@ -80,4 +81,54 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
+
+    // 특정 포스트 읽기
+    @GetMapping("/team/{teamId}/post/{postId}")
+    public ResponseEntity<ReadPostDto> readPost(@PathVariable(name="teamId") long teamId,
+                                                @PathVariable(name="postId") long postId,
+                                                @RequestHeader(name="Authorization") String token) {
+        try {
+            long userId = authManager.extractUserId(token);
+            if (authManager.isMember(teamId, userId)) {
+                ReadPostDto readPostDto = postService.readPost(postId);
+                return ResponseEntity.status(HttpStatus.OK).body(readPostDto);
+            } else {
+                throw new Exception(userId + "is not Member : " + teamId);
+            }
+        } catch(Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    // 특정 포스트의 댓글 읽기
+    @GetMapping("/team/{teamId}/post/{postId}/comment")
+    public ResponseEntity<List<CommentDto>> readComment(@PathVariable(name="teamId") long teamId,
+                                                        @PathVariable(name="postId") long postId,
+                                                        @RequestHeader(name="Authorization") String token) {
+        try{
+            long userId = authManager.extractUserId(token);
+            if (authManager.isMember(teamId, userId)) {
+                List<CommentDto> commentList = postService.readPostComment(postId);
+                return ResponseEntity.status(HttpStatus.OK).body(commentList);
+            } else {
+                throw new Exception(userId + "is not Member : " + teamId);
+            }
+        } catch(Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    @PostMapping("/team/{teamId}/post/{postId}/comment")
+    public ResponseEntity<CreateCommentResponseDto> createComment(@PathVariable(name="teamId") long teamId,
+                                                                  @PathVariable(name="postId") long postId,
+                                                                  @RequestHeader(name="Authorization") String token,
+                                                                  @RequestBody CreateCommentRequestDto requestDto) {
+        try {
+
+        } catch(Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+    // 특정 포스트에 댓글 달기
+    // 특정 포스트에 댓글 삭제
 }

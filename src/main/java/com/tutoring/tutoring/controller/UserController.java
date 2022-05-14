@@ -1,8 +1,7 @@
 package com.tutoring.tutoring.controller;
 
-import com.tutoring.tutoring.domain.AuthManager;
+import com.tutoring.tutoring.AuthManager;
 import com.tutoring.tutoring.domain.team.dto.TeamDto;
-import com.tutoring.tutoring.domain.user.User;
 import com.tutoring.tutoring.domain.user.dto.*;
 import com.tutoring.tutoring.domain.userprofile.dto.UpdateUserProfileRequestDto;
 import com.tutoring.tutoring.domain.userprofile.dto.UserProfileResponseDto;

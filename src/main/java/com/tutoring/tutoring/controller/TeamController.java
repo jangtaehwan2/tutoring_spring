@@ -1,15 +1,13 @@
 package com.tutoring.tutoring.controller;
 
-import com.tutoring.tutoring.domain.AuthManager;
+import com.tutoring.tutoring.AuthManager;
 import com.tutoring.tutoring.domain.joinrequest.dto.*;
-import com.tutoring.tutoring.domain.team.TeamType;
 import com.tutoring.tutoring.domain.team.dto.CreateTeamRequestDto;
 import com.tutoring.tutoring.domain.team.dto.CreateTeamResponseDto;
 import com.tutoring.tutoring.domain.team.dto.ReadTeamListDto;
 import com.tutoring.tutoring.domain.team.dto.TeamDto;
 import com.tutoring.tutoring.service.TeamService;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

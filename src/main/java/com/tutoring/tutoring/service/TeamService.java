@@ -1,6 +1,6 @@
 package com.tutoring.tutoring.service;
 
-import com.tutoring.tutoring.domain.AuthManager;
+import com.tutoring.tutoring.AuthManager;
 import com.tutoring.tutoring.domain.joinrequest.JoinRequest;
 import com.tutoring.tutoring.domain.joinrequest.dto.AcceptJoinRequestResponseDto;
 import com.tutoring.tutoring.domain.joinrequest.dto.CreateJoinRequestResponseDto;

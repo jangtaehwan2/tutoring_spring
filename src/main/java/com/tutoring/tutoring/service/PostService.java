@@ -1,5 +1,7 @@
 package com.tutoring.tutoring.service;
 
+import com.tutoring.tutoring.domain.comment.Comment;
+import com.tutoring.tutoring.domain.comment.dto.CommentDto;
 import com.tutoring.tutoring.domain.post.Post;
 import com.tutoring.tutoring.domain.post.dto.CreatePostResponseDto;
 import com.tutoring.tutoring.domain.post.dto.PostDto;
@@ -8,11 +10,9 @@ import com.tutoring.tutoring.domain.team.Team;
 import com.tutoring.tutoring.domain.team.dto.TeamDto;
 import com.tutoring.tutoring.domain.user.User;
 import com.tutoring.tutoring.domain.user.dto.UserDto;
+import com.tutoring.tutoring.domain.userprofile.UserProfile;
 import com.tutoring.tutoring.domain.userprofile.dto.UserProfileDto;
-import com.tutoring.tutoring.repository.PostRepository;
-import com.tutoring.tutoring.repository.TeamRepository;
-import com.tutoring.tutoring.repository.UserProfileRepository;
-import com.tutoring.tutoring.repository.UserRepository;
+import com.tutoring.tutoring.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +27,7 @@ public class PostService {
     private final UserRepository userRepository;
     private final TeamRepository teamRepository;
     private final UserProfileRepository userProfileRepository;
+    private final CommentRepository commentRepository;
 
     private String tagListToString(List<String> tags) {
         String tag = "";
@@ -134,4 +135,55 @@ public class PostService {
         }
         return readPostDtoList;
     }
+
+    /**
+     * 특정 게시글 읽기 로직
+     * @param postId
+     * @return
+     */
+    public ReadPostDto readPost(long postId) {
+        Post post = postRepository.findById(postId).get();
+        User user = userRepository.findById(post.getUser().getId()).get();
+        UserProfile userProfile = userProfileRepository.findByUserId(user.getId()).get();
+        UserDto userDto = UserDto.builder()
+                .user(user)
+                .userProfile(UserProfileDto.builder()
+                        .userProfile(userProfile)
+                        .build())
+                .build();
+
+        ReadPostDto readPostDto = ReadPostDto.builder()
+                .post(PostDto.builder()
+                        .post(post)
+                        .build())
+                .team(new TeamDto(post.getTeam()))
+                .user(userDto)
+                .build();
+        return readPostDto;
+    }
+
+     public List<CommentDto> readPostComment(long postId) {
+         // Post 에 속하는 코멘트 찾기
+         List<Comment> CommentList = commentRepository.findAllByPostId(postId);
+         // Response 를 위한 리스트 생성
+         List<CommentDto> commentDtoList = new ArrayList<>();
+         // 코멘트들의 형태 변경
+         for (Comment comment : CommentList) {
+             User user = comment.getUser();
+             UserProfile userProfile = userProfileRepository.findByUserId(user.getId()).get();
+             UserDto userDto = UserDto.builder()
+                                .user(user)
+                                .userProfile(UserProfileDto.builder()
+                                        .userProfile(userProfile)
+                                        .build())
+                                .build();
+             // 리스트에 추가
+             commentDtoList.add(CommentDto.builder()
+                     .id(comment.getId())
+                     .description(comment.getDescription())
+                     .user(userDto)
+                     .build());
+         }
+         return commentDtoList;
+     }
 }

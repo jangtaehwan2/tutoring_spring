@@ -1,7 +1,7 @@
 package com.tutoring.tutoring.service;
 
 import com.auth0.jwt.JWT;
-import com.tutoring.tutoring.domain.AuthManager;
+import com.tutoring.tutoring.AuthManager;
 import com.tutoring.tutoring.domain.subscription.Subscription;
 import com.tutoring.tutoring.domain.team.dto.TeamDto;
 import com.tutoring.tutoring.domain.user.User;

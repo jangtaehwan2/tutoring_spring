@@ -2,6 +2,8 @@ package com.tutoring.tutoring.controller;
 
 import com.tutoring.tutoring.AuthManager;
 import com.tutoring.tutoring.domain.comment.dto.CommentDto;
+import com.tutoring.tutoring.domain.comment.dto.CreateCommentRequestDto;
+import com.tutoring.tutoring.domain.comment.dto.CreateCommentResponseDto;
 import com.tutoring.tutoring.domain.post.dto.CreatePostRequestDto;
 import com.tutoring.tutoring.domain.post.dto.CreatePostResponseDto;
 import com.tutoring.tutoring.domain.post.dto.ReadPostDto;
@@ -22,10 +24,10 @@ public class PostController {
 
     /**
      * 글 작성하기 (추후 권한작업) 1
-     * 댓글 작성하기 (추후 권한작업)
+     * 댓글 작성하기 (추후 권한작업) 1
      * 글 리스트 조회하기 (PUBLIC) 1
-     * 글 리스트 조회하기 (TEAM)
-     * 글 상세 조회하기 (추후 권한작업)
+     * 글 리스트 조회하기 (TEAM) 1
+     * 글 상세 조회하기 (추후 권한작업) 1
      * 글 수정하기 (추후 권한작업)
      * 글 삭제하기 (추후 권한작업)
      */
@@ -93,7 +95,7 @@ public class PostController {
                 ReadPostDto readPostDto = postService.readPost(postId);
                 return ResponseEntity.status(HttpStatus.OK).body(readPostDto);
             } else {
-                throw new Exception(userId + "is not Member : " + teamId);
+                throw new Exception("userId : " + userId + "is not Member of TeamId : " + teamId);
             }
         } catch(Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -111,24 +113,31 @@ public class PostController {
                 List<CommentDto> commentList = postService.readPostComment(postId);
                 return ResponseEntity.status(HttpStatus.OK).body(commentList);
             } else {
-                throw new Exception(userId + "is not Member : " + teamId);
+                throw new Exception("userId : " + userId + "is not Member of TeamId : " + teamId);
             }
         } catch(Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
 
+    // 특정 포스트에 댓글 달기
     @PostMapping("/team/{teamId}/post/{postId}/comment")
     public ResponseEntity<CreateCommentResponseDto> createComment(@PathVariable(name="teamId") long teamId,
                                                                   @PathVariable(name="postId") long postId,
                                                                   @RequestHeader(name="Authorization") String token,
                                                                   @RequestBody CreateCommentRequestDto requestDto) {
         try {
-
+            long userId = authManager.extractUserId(token);
+            if(authManager.isMember(teamId, userId)) {
+                String description = requestDto.getDescription();
+                CreateCommentResponseDto comment = postService.createComment(postId, userId, description);
+                return ResponseEntity.status(HttpStatus.OK).body(comment);
+            } else {
+                throw new Exception("userId : " + userId + "is not Member of TeamId : " + teamId);
+            }
         } catch(Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
-    // 특정 포스트에 댓글 달기
     // 특정 포스트에 댓글 삭제
 }

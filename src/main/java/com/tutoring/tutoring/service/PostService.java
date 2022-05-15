@@ -2,6 +2,7 @@ package com.tutoring.tutoring.service;
 
 import com.tutoring.tutoring.domain.comment.Comment;
 import com.tutoring.tutoring.domain.comment.dto.CommentDto;
+import com.tutoring.tutoring.domain.comment.dto.CreateCommentResponseDto;
 import com.tutoring.tutoring.domain.post.Post;
 import com.tutoring.tutoring.domain.post.dto.CreatePostResponseDto;
 import com.tutoring.tutoring.domain.post.dto.PostDto;
@@ -114,6 +115,10 @@ public class PostService {
                 .build();
     }
 
+    /**
+     * public 팀의 게시글 읽기 로직
+     * @return
+     */
     public List<ReadPostDto> readPostList() {
         List<ReadPostDto> readPostDtoList = new ArrayList<>();
 
@@ -125,6 +130,11 @@ public class PostService {
         return readPostDtoList;
     }
 
+    /**
+     * 특정 팀의 게시글 읽기 로직
+     * @param teamId
+     * @return
+     */
     public List<ReadPostDto> readTeamPostList(long teamId) {
         List<ReadPostDto> readPostDtoList = new ArrayList<>();
 
@@ -162,6 +172,11 @@ public class PostService {
         return readPostDto;
     }
 
+    /**
+     * 글에 속한 댓글 읽기 로직
+     * @param postId
+     * @return
+     */
      public List<CommentDto> readPostComment(long postId) {
          // Post 에 속하는 코멘트 찾기
          List<Comment> CommentList = commentRepository.findAllByPostId(postId);
@@ -185,5 +200,25 @@ public class PostService {
                      .build());
          }
          return commentDtoList;
+     }
+
+    /**
+     * 댓글 생성 로직
+     * @param postId
+     * @param userId
+     * @param description
+     * @return
+     */
+     public CreateCommentResponseDto createComment(long postId, long userId, String description) {
+        Comment comment = Comment.builder()
+                .post(postRepository.getById(postId))
+                .user(userRepository.getById(userId))
+                .description(description)
+                .build();
+         Comment savedComment = commentRepository.save(comment);
+         return CreateCommentResponseDto.builder()
+                 .id(savedComment.getId())
+                 .description(savedComment.getDescription())
+                 .build();
      }
 }

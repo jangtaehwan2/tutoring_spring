@@ -27,14 +27,13 @@ public class Comment {
     @JoinColumn(name = "post_id")
     private Post post;
 
-    @NonNull
-    private long time;
+//    @NonNull
+//    private long time;
 
     @Builder
-    public Comment(@NonNull String description, @NonNull User user, @NonNull Post post, @NonNull long time) {
+    public Comment(@NonNull String description, @NonNull User user, @NonNull Post post) {
         this.description = description;
         this.user = user;
         this.post = post;
-        this.time = time;
     }
 }

@@ -695,7 +695,7 @@ public 팀은 요청과 동시에 참여되어 0을 반환한다.
 }
 ```
 
-### 3-3. 특정 팀 글 읽기
+### 3-3. 특정 팀의 글목록 읽기
 **Description**
 
 특정 팀에 소속된 글의 리스트를 읽는다.  
@@ -703,7 +703,7 @@ public 팀은 요청과 동시에 참여되어 0을 반환한다.
 
 *Request*
 * HttpMethod : GET
-* Path : /post/team/post/{postId}
+* Path : /team/{teamId}/post
 * Body
 ```json
 {
@@ -752,6 +752,145 @@ public 팀은 요청과 동시에 참여되어 0을 반환한다.
     }
   }
 ]
+```
+
+### 3-4. 특정 글 읽기
+**Description**
+
+특정 팀에 소속된 특정 글을 읽는다.
+
+*Request*
+* HttpMethod : GET
+* Path : /team/{teamId}/post/{postId}
+* Body
+```json
+{
+}
+```
+*Response*
+* Header
+  * Content-Type : application/json
+* Body
+```json
+{
+  "post": {
+    "id": 1,
+    "title": "HELLO",
+    "tags": [
+      "test",
+      "test1",
+      "test3"
+    ],
+    "description": "HELLO"
+  },
+  "team": {
+    "id": 1,
+    "name": "private",
+    "tags": [
+      "private"
+    ],
+    "description": null,
+    "fileName": null,
+    "fileSize": 0,
+    "filePath": null,
+    "type": "PRIVATE",
+    "hostId": 1,
+    "closed": false
+  },
+  "user": {
+    "id": 1,
+    "userNickname": "admin",
+    "userProfile": {
+      "id": 1,
+      "fileName": null,
+      "fileSize": 0,
+      "filePath": null,
+      "description": null
+    }
+  }
+}
+```
+
+### 3-5. 특정 글에 댓글 생성
+**Description**
+
+특정 글의 하위에 댓글을 생성한다.
+
+*Request*
+* HttpMethod : POST
+* Path : /team/{teamId}/post/{postId}/comment
+* Body
+```json
+{
+  "description" : "hello"
+}
+```
+*Response*
+* Header
+  * Content-Type : application/json
+* Body
+```json
+{
+  "id" : "1",
+  "description" : "hello"
+}
+```
+
+### 3-6. 특정 글의 댓글 읽기
+**Description**
+
+특정 글의 하위에 작성된 댓글들을 읽는다.
+
+*Request*
+* HttpMethod : GET
+* Path : /team/{teamId}/post/{postId}/comment
+* Body
+```json
+{
+}
+```
+*Response*
+* Header
+  * Content-Type : application/json
+* Body
+```json
+{
+  "post": {
+    "id": 1,
+    "title": "HELLO",
+    "tags": [
+      "test",
+      "test1",
+      "test3"
+    ],
+    "description": "HELLO"
+  },
+  "team": {
+    "id": 1,
+    "name": "private",
+    "tags": [
+      "private"
+    ],
+    "description": null,
+    "fileName": null,
+    "fileSize": 0,
+    "filePath": null,
+    "type": "PRIVATE",
+    "hostId": 1,
+    "closed": false
+  },
+  "user": {
+    "id": 1,
+    "userNickname": "admin",
+    "userProfile": {
+      "id": 1,
+      "fileName": null,
+      "fileSize": 0,
+      "filePath": null,
+      "description": null
+    }
+  }
+}
 ```
 
 

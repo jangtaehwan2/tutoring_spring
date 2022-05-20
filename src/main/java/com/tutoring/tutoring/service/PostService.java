@@ -221,4 +221,54 @@ public class PostService {
                  .description(savedComment.getDescription())
                  .build();
      }
+
+     public List<ReadPostDto> searchPublicPost(String requirement, String query) {
+         List<ReadPostDto> responseList = new ArrayList<>();
+         if(requirement.equals("title")) {
+             List<Post> posts = postRepository.searchPublicPostByTitle(query);
+             for(Post post : posts) {
+                 responseList.add(postToDto(post));
+             }
+             return responseList;
+         } else if (requirement.equals("tag")) {
+             List<Post> posts = postRepository.searchPublicPostByTag(query);
+             for(Post post : posts) {
+                 responseList.add(postToDto(post));
+             }
+             return responseList;
+         } else if (requirement.equals("description")) {
+             List<Post> posts = postRepository.searchPublicPostByDescription(query);
+             for(Post post : posts) {
+                 responseList.add(postToDto(post));
+             }
+             return responseList;
+         } else {
+             return null;
+         }
+     }
+
+    public List<ReadPostDto> searchPost(long teamId, String requirement, String query) {
+        List<ReadPostDto> responseList = new ArrayList<>();
+        if(requirement.equals("title")) {
+            List<Post> posts = postRepository.searchPostByTitle(teamId, query);
+            for(Post post : posts) {
+                responseList.add(postToDto(post));
+            }
+            return responseList;
+        } else if (requirement.equals("tag")) {
+            List<Post> posts = postRepository.searchPostByTag(teamId, query);
+            for(Post post : posts) {
+                responseList.add(postToDto(post));
+            }
+            return responseList;
+        } else if (requirement.equals("description")) {
+            List<Post> posts = postRepository.searchPostByDescription(teamId, query);
+            for(Post post : posts) {
+                responseList.add(postToDto(post));
+            }
+            return responseList;
+        } else {
+            return null;
+        }
+    }
 }

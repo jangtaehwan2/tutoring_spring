@@ -79,6 +79,13 @@
     * json
 ---
 ## 1. User
+* 로그인
+* 회원가입
+* 유저조회
+* 유저 참여 목록 조회
+* 정보수정
+* 프로필수정
+* 회원탈퇴
 ### 1-1. 로그인
 **Description**   
 
@@ -317,6 +324,14 @@ userId를 통해 유저 1명의 참여중인 팀 목록을 조회한다.
 ```
 
 ## 2. Team
+* 팀 생성
+* 팀 목록 읽기
+* 팀 읽기
+* 팀 참여하기
+* 팀 참여 요청 보기
+* 팀 요청 수락하기
+* 팀 요청 거절하기
+* 
 ### 2-1. 팀생성
 **Description**
 
@@ -377,33 +392,33 @@ userId를 통해 유저 1명의 참여중인 팀 목록을 조회한다.
   "teams": [
     {
       "id": 1,
-      "name": "JAVA STUDY",
+      "name": "private",
       "tags": [
-        "java",
-        "spring",
-        "oop"
+        "private"
       ],
       "description": null,
       "fileName": null,
       "fileSize": 0,
       "filePath": null,
-      "type": "PUBLIC",
-      "hostId": 1
+      "type": "PRIVATE",
+      "hostId": 1,
+      "hostName": "admin",
+      "closed": false
     },
     {
-      "id": 3,
-      "name": "JAVAzxc",
+      "id": 2,
+      "name": "public",
       "tags": [
-        "java",
-        "spring",
-        "oop"
+        "publicTeam"
       ],
       "description": null,
       "fileName": null,
       "fileSize": 0,
       "filePath": null,
       "type": "PUBLIC",
-      "hostId": 1
+      "hostId": 1,
+      "hostName": "admin",
+      "closed": false
     }
   ]
 }
@@ -572,6 +587,14 @@ public 팀은 요청과 동시에 참여되어 0을 반환한다.
 ---
 
 ## 3. POST
+* 글 생성
+* 공개 글 목록 읽기
+* 팀 글 목록 읽기
+* 공개 글 검색하기
+* 팀 글 검색하기
+* 특정 글 읽기
+* 댓글 생성
+* 댓글 읽기
 ### 3-1. 글 생성
 **Description**
 
@@ -891,6 +914,133 @@ public 팀은 요청과 동시에 참여되어 0을 반환한다.
     }
   }
 }
+```
+
+### 3-6. 공개 글 검색
+**Description**
+
+PUBLIC Team 에 속하는 글을 검색한다.  
+requirement 로 title, tag, description (제목, 태그, 내용) 중 검색 조건을 설정하고,
+query 로 검색어를 설정한다.
+
+*Request*
+* HttpMethod : GET
+* Path : /post/search
+* Body
+```json
+{
+  "requirement" : "title",
+  "query": "title 3"
+}
+```
+*Response*
+* Header
+  * Content-Type : application/json
+* Body
+```json
+[
+  {
+    "post": {
+      "id": 2,
+      "title": "title 2",
+      "tags": [
+        "tag1",
+        "tag2"
+      ],
+      "description": "hiyo"
+    },
+    "team": {
+      "id": 2,
+      "name": "public",
+      "tags": [
+        "publicTeam"
+      ],
+      "description": null,
+      "fileName": null,
+      "fileSize": 0,
+      "filePath": null,
+      "type": "PUBLIC",
+      "hostId": 1,
+      "hostName": "admin",
+      "closed": false
+    },
+    "user": {
+      "id": 1,
+      "userNickname": "admin",
+      "userProfile": {
+        "id": 1,
+        "fileName": null,
+        "fileSize": 0,
+        "filePath": null,
+        "description": null
+      }
+    }
+  }
+]
+```
+
+### 3-6. 팀 글 검색
+**Description**
+
+Team 에 속하는 글을 검색한다.  
+requirement 로 title, tag, description (제목, 태그, 내용) 중 검색 조건을 설정하고,
+query 로 검색어를 설정한다.
+
+*Request*
+* HttpMethod : GET
+* Path : /team/{teamId}/post/search
+* Body
+```json
+{
+  "requirement" : "description",
+  "query": "HELLO"
+}
+```
+*Response*
+* Header
+  * Content-Type : application/json
+* Body
+```json
+[
+  {
+    "post": {
+      "id": 1,
+      "title": "HELLO",
+      "tags": [
+        "test",
+        "test1",
+        "test3"
+      ],
+      "description": "HELLO"
+    },
+    "team": {
+      "id": 1,
+      "name": "private",
+      "tags": [
+        "private"
+      ],
+      "description": null,
+      "fileName": null,
+      "fileSize": 0,
+      "filePath": null,
+      "type": "PRIVATE",
+      "hostId": 1,
+      "hostName": "admin",
+      "closed": false
+    },
+    "user": {
+      "id": 1,
+      "userNickname": "admin",
+      "userProfile": {
+        "id": 1,
+        "fileName": null,
+        "fileSize": 0,
+        "filePath": null,
+        "description": null
+      }
+    }
+  }
+]
 ```
 
 

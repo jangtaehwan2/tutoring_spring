@@ -24,7 +24,9 @@ public class TeamController {
      * 2. 팀 목록 읽기 (public, private-profileIsOpen) 1
      * 3. 팀 읽기(단일) 1
      * 4. 팀 조인 1
-     * 팀 조인(요청) 목록 보기
+     * 팀 조인(요청) 목록 보기 1
+     * 팀 조인 수락 1
+     * 팀 조인 거절 1
      * 5. 팀 수정
      * 6. 팀 오픈 클로즈
      */
@@ -168,6 +170,4 @@ public class TeamController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
-
-
 }

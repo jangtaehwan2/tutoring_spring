@@ -7,6 +7,7 @@ import com.tutoring.tutoring.domain.comment.dto.CreateCommentResponseDto;
 import com.tutoring.tutoring.domain.post.dto.CreatePostRequestDto;
 import com.tutoring.tutoring.domain.post.dto.CreatePostResponseDto;
 import com.tutoring.tutoring.domain.post.dto.ReadPostDto;
+import com.tutoring.tutoring.domain.post.dto.SearchPostRequestDto;
 import com.tutoring.tutoring.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,10 @@ public class PostController {
      * 글 상세 조회하기 (추후 권한작업) 1
      * 글 수정하기 (추후 권한작업)
      * 글 삭제하기 (추후 권한작업)
+     *
+     * 글 검색 기능 (title)
+     * 글 검색 기능 (userId)
+     * 글 검색 기능 (tag)
      */
 
     /**
@@ -140,4 +145,35 @@ public class PostController {
         }
     }
     // 특정 포스트에 댓글 삭제
+
+    // 특정 포스트 이름으로 검색 (public)
+    @GetMapping("/post/search")
+    public ResponseEntity<?> searchPublicPost(@RequestBody SearchPostRequestDto requestDto) {
+        try {
+            String requirement = requestDto.getRequirement(); // 검색 조건, 컬럼
+            String query = requestDto.getQuery(); // 검색어
+
+            List<ReadPostDto> response = postService.searchPublicPost(requirement, query);
+
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch(Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    // 특정 포스트 이름으로 검색 (team)
+    @GetMapping("/team/{teamId}/post/search")
+    public ResponseEntity<?> searchPost(@PathVariable(name="teamId")long teamId,
+                                        @RequestBody SearchPostRequestDto requestDto) {
+        try {
+            String requirement = requestDto.getRequirement();
+            String query = requestDto.getQuery();
+
+            List<ReadPostDto> response = postService.searchPost(teamId, requirement, query);
+
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
 }

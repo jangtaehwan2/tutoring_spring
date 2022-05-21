@@ -584,6 +584,87 @@ public 팀은 요청과 동시에 참여되어 0을 반환한다.
 }
 ```
 
+### 2-7. 팀 검색
+**Description**
+
+팀을 검색한다.  
+name 또는 tag 로 검색이 가능하다.
+
+*Request*
+* HttpMethod : GET
+* Path : /team/search
+* Body
+```json
+{
+  "requirement" : "name",
+  "query": "pri"
+}
+```
+*Response*
+* Header
+  * Content-Type : application/json
+* Body
+
+**성공시**
+```json
+[
+  {
+    "id": 1,
+    "name": "private",
+    "tags": [
+      "private"
+    ],
+    "description": null,
+    "fileName": null,
+    "fileSize": 0,
+    "filePath": null,
+    "type": "PRIVATE",
+    "hostId": 1,
+    "hostName": "admin",
+    "closed": false
+  }
+]
+```
+
+### 2-7. 팀 수정
+**Description**
+
+팀의 description, isClosed 를 수정한다.
+
+*Request*
+* HttpMethod : PUT
+* Path : /team/{teamId}
+* Body
+```json
+{
+  "description" : "Hello, world",
+  "isClosed" : true
+}
+```
+*Response*
+* Header
+  * Content-Type : application/json
+* Body
+
+**성공시**
+```json
+{
+  "id": 1,
+  "name": "private",
+  "tags": [
+    "private"
+  ],
+  "description": "Hello, world",
+  "fileName": null,
+  "fileSize": 0,
+  "filePath": null,
+  "type": "PRIVATE",
+  "hostId": 1,
+  "hostName": "admin",
+  "closed": true
+}
+```
+
 ---
 
 ## 3. POST

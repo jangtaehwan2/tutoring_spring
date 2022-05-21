@@ -2,10 +2,7 @@ package com.tutoring.tutoring.controller;
 
 import com.tutoring.tutoring.AuthManager;
 import com.tutoring.tutoring.domain.joinrequest.dto.*;
-import com.tutoring.tutoring.domain.team.dto.CreateTeamRequestDto;
-import com.tutoring.tutoring.domain.team.dto.CreateTeamResponseDto;
-import com.tutoring.tutoring.domain.team.dto.ReadTeamListDto;
-import com.tutoring.tutoring.domain.team.dto.TeamDto;
+import com.tutoring.tutoring.domain.team.dto.*;
 import com.tutoring.tutoring.service.TeamService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -79,6 +76,21 @@ public class TeamController {
         try{
             TeamDto teamDto = teamService.readTeam(teamId);
             return ResponseEntity.status(HttpStatus.OK).body(teamDto);
+        } catch(Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    //팀 오픈/클로즈, 소개 수정
+    @PutMapping("/{teamId}")
+    public ResponseEntity<?> updateTeam(@PathVariable(name="teamId")long teamId, @RequestBody UpdateTeamRequestDto requestDto) {
+        try {
+            String description = requestDto.getDescription();
+            String isClosed = requestDto.getIsClosed();
+            System.out.println(isClosed);
+            TeamDto response = teamService.updateTeam(teamId, description, isClosed);
+
+            return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch(Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
@@ -172,5 +184,16 @@ public class TeamController {
     }
 
     // 팀 검색 기능
+    @GetMapping("/search")
+    public ResponseEntity<?> searchTeam(@RequestBody SearchTeamRequestDto requestDto) {
+        try {
+            String requirement = requestDto.getRequirement();
+            String query = requestDto.getQuery();
+            List<TeamDto> response = teamService.searchTeam(requirement, query);
 
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
 }

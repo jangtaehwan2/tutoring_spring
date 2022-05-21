@@ -198,4 +198,33 @@ public class TeamService {
                 .message("JoinRequest Rejected")
                 .build();
     }
+
+    public List<TeamDto> searchTeam(String requirement, String query) {
+        List<TeamDto> teamList = new ArrayList<>();
+        if(requirement.equals("tag")) {
+            List<Team> teams = teamRepository.searchTeamByTag(query);
+            for (Team team : teams) {
+                teamList.add(new TeamDto(team));
+            }
+        } else if(requirement.equals("name")) {
+            List<Team> teams = teamRepository.searchTeamByName(query);
+            for (Team team : teams) {
+                teamList.add(new TeamDto(team));
+            }
+        }
+        return teamList;
+    }
+
+    public TeamDto updateTeam(long teamId, String description, String isClosed) {
+        Team team = teamRepository.findById(teamId).get();
+        boolean oc;
+        if(isClosed.equals("true")) {
+            oc = true;
+        } else {
+            oc = false;
+        }
+        team.update(description, oc);
+        Team savedTeam = teamRepository.save(team);
+        return new TeamDto(savedTeam);
+    }
 }

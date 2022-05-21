@@ -47,4 +47,9 @@ public class Team {
         this.type = type;
         this.host = host;
     }
+
+    public void update(String description, boolean isClosed) {
+        this.description = description;
+        this.isClosed = isClosed;
+    }
 }

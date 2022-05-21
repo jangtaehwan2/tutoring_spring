@@ -271,4 +271,13 @@ public class PostService {
             return null;
         }
     }
+
+    public List<ReadPostDto> userPost(long userId) {
+        List<ReadPostDto> responseList = new ArrayList<>();
+        List<Post> posts = postRepository.searchUserPost(userId);
+        for(Post post : posts) {
+            responseList.add(postToDto(post));
+        }
+        return responseList;
+    }
 }

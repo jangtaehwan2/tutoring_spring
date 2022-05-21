@@ -35,4 +35,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query(value = "SELECT * FROM post p INNER JOIN team t on p.team_id = t.id where p.team_id = :teamId and p.tag like concat('%', :query, '%')", nativeQuery = true)
     List<Post> searchPostByTag(@Param("teamId")long teamId, @Param("query")String query);
 
+    @Query(value = "SELECT * FROM post p INNER JOIN team t on p.team_id = t.id where p.user_id = :userId", nativeQuery = true)
+    List<Post> searchUserPost(@Param("userId")long userId);
 }

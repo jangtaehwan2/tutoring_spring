@@ -145,10 +145,11 @@ public class PostController {
         }
     }
     // 특정 포스트에 댓글 삭제
+//    @PostMapping("/team/{teamId}/post/{postId}/comment/{commentId}")
 
     // 특정 포스트 이름으로 검색 (public)
     @GetMapping("/post/search")
-    public ResponseEntity<?> searchPublicPost(@RequestBody SearchPostRequestDto requestDto) {
+    public ResponseEntity<List<ReadPostDto>> searchPublicPost(@RequestBody SearchPostRequestDto requestDto) {
         try {
             String requirement = requestDto.getRequirement(); // 검색 조건, 컬럼
             String query = requestDto.getQuery(); // 검색어
@@ -163,13 +164,25 @@ public class PostController {
 
     // 특정 포스트 이름으로 검색 (team)
     @GetMapping("/team/{teamId}/post/search")
-    public ResponseEntity<?> searchPost(@PathVariable(name="teamId")long teamId,
+    public ResponseEntity<List<ReadPostDto>> searchPost(@PathVariable(name="teamId")long teamId,
                                         @RequestBody SearchPostRequestDto requestDto) {
         try {
             String requirement = requestDto.getRequirement();
             String query = requestDto.getQuery();
 
             List<ReadPostDto> response = postService.searchPost(teamId, requirement, query);
+
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    // 내 글 리스트 보기
+    @GetMapping("/user/{userId}/post")
+    public ResponseEntity<List<ReadPostDto>> userPost(@PathVariable(name="userId")long userId) {
+        try {
+            List<ReadPostDto> response = postService.userPost(userId);
 
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {

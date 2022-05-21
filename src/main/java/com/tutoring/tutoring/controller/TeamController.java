@@ -170,4 +170,7 @@ public class TeamController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
+
+    // 팀 검색 기능
+
 }

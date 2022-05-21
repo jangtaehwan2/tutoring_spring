@@ -595,6 +595,7 @@ public 팀은 요청과 동시에 참여되어 0을 반환한다.
 * 특정 글 읽기
 * 댓글 생성
 * 댓글 읽기
+* 유저의 글 리스트 보기
 ### 3-1. 글 생성
 **Description**
 
@@ -994,6 +995,66 @@ query 로 검색어를 설정한다.
 {
   "requirement" : "description",
   "query": "HELLO"
+}
+```
+*Response*
+* Header
+  * Content-Type : application/json
+* Body
+```json
+[
+  {
+    "post": {
+      "id": 1,
+      "title": "HELLO",
+      "tags": [
+        "test",
+        "test1",
+        "test3"
+      ],
+      "description": "HELLO"
+    },
+    "team": {
+      "id": 1,
+      "name": "private",
+      "tags": [
+        "private"
+      ],
+      "description": null,
+      "fileName": null,
+      "fileSize": 0,
+      "filePath": null,
+      "type": "PRIVATE",
+      "hostId": 1,
+      "hostName": "admin",
+      "closed": false
+    },
+    "user": {
+      "id": 1,
+      "userNickname": "admin",
+      "userProfile": {
+        "id": 1,
+        "fileName": null,
+        "fileSize": 0,
+        "filePath": null,
+        "description": null
+      }
+    }
+  }
+]
+```
+
+### 3-6. 유저 글 검색
+**Description**
+
+userId 로 특정된 유저의 글 리스트를 읽는다.
+
+*Request*
+* HttpMethod : GET
+* Path : /user/{userId}/post
+* Body
+```json
+{
 }
 ```
 *Response*

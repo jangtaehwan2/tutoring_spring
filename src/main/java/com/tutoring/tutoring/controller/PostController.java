@@ -107,6 +107,24 @@ public class PostController {
         }
     }
 
+    // 특정 포스트 삭제
+    @DeleteMapping("/team/{teamId}/post/{postId}")
+    public ResponseEntity<?> deletePost(@PathVariable(name="teamId") long teamId,
+                                        @PathVariable(name="postId") long postId,
+                                        @RequestHeader(name="Authorization") String token) {
+        try {
+            long userId = authManager.extractUserId(token);
+            String response = postService.deletePost(postId, userId);
+            if(response==null) {
+                throw new Exception("Forbidden");
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+
     // 특정 포스트의 댓글 읽기
     @GetMapping("/team/{teamId}/post/{postId}/comment")
     public ResponseEntity<List<CommentDto>> readComment(@PathVariable(name="teamId") long teamId,
@@ -189,4 +207,5 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
+
 }

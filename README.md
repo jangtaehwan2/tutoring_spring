@@ -307,7 +307,7 @@ userId를 통해 유저 1명의 참여중인 팀 목록을 조회한다.
 
 *Request*
 * HttpMethod : DELETE
-* Path : /user
+* Path : /user/{userId}
 * Body
 ```json
 {

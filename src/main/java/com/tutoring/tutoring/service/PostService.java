@@ -280,4 +280,14 @@ public class PostService {
         }
         return responseList;
     }
+
+    public String deletePost(long postId, long userId) {
+         Post post = postRepository.findById(postId).get();
+         if(post.getUser().getId() == userId) {
+             postRepository.delete(post);
+             return "Post " + postId + " Deleted";
+         } else {
+             return null;
+         }
+    }
 }

@@ -131,7 +131,7 @@ public class UserController {
         try{
             long userId = authManager.extractUserId(token);
             DeleteUserResponseDto deleteUserResponseDto = userService.deleteUser(userId);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(deleteUserResponseDto);
+            return ResponseEntity.status(HttpStatus.OK).body(deleteUserResponseDto);
         } catch(Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }

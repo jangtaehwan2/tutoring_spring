@@ -166,7 +166,7 @@ public class PostController {
 //    @PostMapping("/team/{teamId}/post/{postId}/comment/{commentId}")
 
     // 특정 포스트 이름으로 검색 (public)
-    @GetMapping("/post/search")
+    @PostMapping("/post/search")
     public ResponseEntity<List<ReadPostDto>> searchPublicPost(@RequestBody SearchPostRequestDto requestDto) {
         try {
             String requirement = requestDto.getRequirement(); // 검색 조건, 컬럼
@@ -181,7 +181,7 @@ public class PostController {
     }
 
     // 특정 포스트 이름으로 검색 (team)
-    @GetMapping("/team/{teamId}/post/search")
+    @PostMapping("/team/{teamId}/post/search")
     public ResponseEntity<List<ReadPostDto>> searchPost(@PathVariable(name="teamId")long teamId,
                                         @RequestBody SearchPostRequestDto requestDto) {
         try {

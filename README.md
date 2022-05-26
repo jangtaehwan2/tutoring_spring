@@ -461,7 +461,9 @@ userId를 통해 유저 1명의 참여중인 팀 목록을 조회한다.
 **Description**
 
 팀에 참여하는 요청을 보낸다.  
-요청 성공시 requestId를 반환하고, 실패 시 -1을 반환하며,
+요청 성공시 requestId를 반환하고, 이미 요청이 되어있다면 http status 400 page 를 반환한다.  
+이미 참여가 되어있다면 팀에서 탈퇴한다. 
+description 은 null 을 허용한다.
 public 팀은 요청과 동시에 참여되어 0을 반환한다.
 
 *Request*
@@ -487,13 +489,13 @@ public 팀은 요청과 동시에 참여되어 0을 반환한다.
   "userId": 1
 }
 ```
-**실패시**
+**탈퇴 성공시**
 ```json
 {
-"message": "Already subscription or requested to join",
-"requestId": -1,
-"teamId": 1,
-"userId": 1
+  "message": "Unsubscribed",
+  "requestId": 0,
+  "teamId": 0,
+  "userId": 0
 }
 ```
 
@@ -591,7 +593,7 @@ public 팀은 요청과 동시에 참여되어 0을 반환한다.
 name 또는 tag 로 검색이 가능하다.
 
 *Request*
-* HttpMethod : GET
+* HttpMethod : POST
 * Path : /team/search
 * Body
 ```json
@@ -1006,7 +1008,7 @@ requirement 로 title, tag, description (제목, 태그, 내용) 중 검색 조�
 query 로 검색어를 설정한다.
 
 *Request*
-* HttpMethod : GET
+* HttpMethod : POST
 * Path : /post/search
 * Body
 ```json
@@ -1069,7 +1071,7 @@ requirement 로 title, tag, description (제목, 태그, 내용) 중 검색 조�
 query 로 검색어를 설정한다.
 
 *Request*
-* HttpMethod : GET
+* HttpMethod : POST
 * Path : /team/{teamId}/post/search
 * Body
 ```json

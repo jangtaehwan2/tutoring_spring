@@ -146,13 +146,14 @@ public class TeamService {
                     .teamId(savedJoinRequest.getTeam().getId())
                     .userId(savedJoinRequest.getUser().getId())
                     .build();
-        } else {
+        } else if(!subscription.isEmpty()) {
+            Subscription subscriptionEntity = subscription.get();
+            subscriptionRepository.delete(subscriptionEntity);
             return CreateJoinRequestResponseDto.builder()
-                    .message("Already subscription or requested to join")
-                    .requestId(-1)
-                    .teamId(teamId)
-                    .userId(userId)
+                    .message("Unsubscribed")
                     .build();
+        } else {
+            return null;
         }
     }
 

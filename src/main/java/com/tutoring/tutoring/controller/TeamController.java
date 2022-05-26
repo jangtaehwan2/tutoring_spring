@@ -110,8 +110,12 @@ public class TeamController {
             long userId = authManager.extractUserId(token);
             String description = createJoinRequestRequestDto.getDescription();
             CreateJoinRequestResponseDto responseDto = teamService.createJoinRequest(teamId, userId, description);
+            if(responseDto == null) {
+                throw new Exception("already join requested");
+            }
             return ResponseEntity.status(HttpStatus.OK).body(responseDto);
         } catch(Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
@@ -184,7 +188,7 @@ public class TeamController {
     }
 
     // 팀 검색 기능
-    @GetMapping("/search")
+    @PostMapping("/search")
     public ResponseEntity<?> searchTeam(@RequestBody SearchTeamRequestDto requestDto) {
         try {
             String requirement = requestDto.getRequirement();
